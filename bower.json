@@ -4,7 +4,10 @@
     "jakubknejzlik <jakub.knejzlik@gmail.com>"
   ],
   "description": "adminr SBAdmin layout module",
-  "main": "dist/index.js",
+  "main": [
+    "dist/index.js",
+    "dist/styles.css"
+  ],
   "moduleType": [],
   "keywords": [
     "adminr",
