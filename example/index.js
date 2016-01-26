@@ -1,15 +1,13 @@
-var mod = angular.module('adminr-core-test',['adminr-sb-admin','adminr-sb-admin']);
+var mod = angular.module('adminr-core-test',['adminr-sb-admin']);
 
 mod.config(function(AdminrDataSourcesProvider,AdminrLoginProvider,AdminrSBAdminProvider){
-    AdminrSBAdminProvider.setAsRootContainerWithLogin()
+    AdminrSBAdminProvider.setAsRootContainer()
     AdminrLoginProvider.usernameType = AdminrLoginProvider.TEXT
     var datasource = AdminrDataSourcesProvider.createDataSource('Test','https://adminr-test-api.herokuapp.com')
     datasource.addResource('Me','/me')
+    datasource.addResource('User','/users/:id',{id:'@id'})
 })
 
-//mod.run(function($templateCache){
-//    $templateCache.put('logged-view.html','<div ng-controller="TestCtrl"><h1>Hello {{me.loading ? \'...\' : me.data.username}} <br /><small>You are now logged!</small></h1><button ng-click="datasource.logout()">logout</button></div>')
-//})
 
 mod.config(function(AdminrSBAdminProvider) {
     AdminrSBAdminProvider.setHomePage('Dashboard', 'dashboard.html')
@@ -17,6 +15,7 @@ mod.config(function(AdminrSBAdminProvider) {
 })
 
 mod.controller('TestCtrl',function($scope,AdminrDataSources){
-    $scope.datasource = DataSources.getDataSource('Test')
+    $scope.datasource = AdminrDataSources.getDataSource('Test')
     $scope.me = $scope.datasource.getResource('Me').get()
+    $scope.users = $scope.datasource.getResource('User').get()
 })

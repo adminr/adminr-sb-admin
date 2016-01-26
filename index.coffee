@@ -6,6 +6,7 @@ require('./directives/side-menu.coffee')
 require('./directives/table.coffee')
 require('./directives/top-menu.coffee')
 
+mod.run(['$state', angular.noop]);
 
 mod.run(($templateCache)->
   $templateCache.put('adminr-sb-admin-layout',require('./views/layout.html'))
@@ -14,12 +15,17 @@ mod.run(($templateCache)->
 )
 
 mod.config(($stateProvider, $urlRouterProvider)->
-#  .state('parent', {url: '/home', abstract: true, template: '<ui-view/>'} )
+  $urlRouterProvider.otherwise('/')
+#  $routeProvider.when('/',{
+#    template:'<span>test</span>'
+#  })
+#  $stateProvider.state('test', {url: '/', template: '<div>test {{$state.current}}</div>', controller:($scope,$state)->
+#    $scope.$state = $state
+#  } )
 #  .state('parent.index', {url: '',template:'test'} )
 )
 
-mod.provider('AdminrSBAdmin',($urlRouterProvider,$stateProvider,AdminrContainerManagerProvider,AdminrLoginProvider)->
-  $urlRouterProvider.otherwise('/')
+mod.provider('AdminrSBAdmin',($stateProvider,AdminrContainerManagerProvider,AdminrLoginProvider)->
 
   class Page
     children: []
@@ -32,6 +38,10 @@ mod.provider('AdminrSBAdmin',($urlRouterProvider,$stateProvider,AdminrContainerM
         options.templateUrl = @templateUrl
       else
         options.template = '<div ui-view></div>'
+
+      options.controller = ($scope,$state)->
+        $scope.$state = $state
+
       @state = $stateProvider.state(@stateName,options)
 
     addPage:(state,name,url,templateUrl)->

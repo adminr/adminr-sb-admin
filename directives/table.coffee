@@ -6,7 +6,9 @@ mod.directive('adminrTable',()->
     compile: (elm, attributes)->
       elm.addClass('table table-bordered table-hover table-striped dataTable')
 
-      for body in elm.find('tbody').filter((index,body)-> return angular.element(body).attr('body-generate-header') isnt undefined)
+      for body in elm.find('tbody')
+        if angular.element(body).attr('body-generate-header') is undefined
+          continue
         body = angular.element(body)
         bodyResource = body.attr('body-resource')
 
@@ -23,7 +25,8 @@ mod.directive('adminrTable',()->
           row.append(headerCell)
           cell.removeAttr('header')
 
-        body.before(header)
+#        console.log(body)
+        body.parent()[0].insertBefore(header[0],body[0])
   }
 )
 mod.directive('tableResource',()->
@@ -72,9 +75,12 @@ mod.directive('headerResource',()->
           else if order is '-' + sortColumn
             return 'sorting_desc'
           return 'sorting'
+
         $scope.sort = (sortColumn)->
           order = $scope.$eval(resource + '.params.order')
-          if order is sortColumn
+          if order is '-' + sortColumn
+            $scope.$eval(resource + '.params.order = undefined')
+          else if order is sortColumn
             $scope.$eval(resource + '.params.order = \'-' + sortColumn + '\'')
           else
             $scope.$eval(resource + '.params.order = \'' + sortColumn + '\'')

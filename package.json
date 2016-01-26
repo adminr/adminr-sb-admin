@@ -14,7 +14,7 @@
   "scripts": {
     "build": "[ -d dist ] || mkdir dist;browserify -t coffeeify -t [ browserify-ngannotate --x .coffee ] -t partialify index.coffee -o dist/index.js;cat ./styles/* | ./node_modules/.bin/node-sass > ./dist/styles.css",
     "serve-example": "./node_modules/.bin/browser-sync start --server --startPath example --files \"dist/*,example/*\" --reload-delay 500",
-    "watch": "./node_modules/.bin/nodemon -x 'npm run build' -e html,coffee --ignore dist --ignore example",
+    "watch": "./node_modules/.bin/nodemon -x 'npm run build' -e html,coffee,scss --ignore dist --ignore example",
     "example": "./node_modules/.bin/parallelshell 'npm run watch' 'npm run serve-example'"
   }
 }
