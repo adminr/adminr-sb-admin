@@ -2,6 +2,9 @@ var mod = angular.module('adminr-core-test',['adminr-sb-admin']);
 
 mod.config(function(AdminrDataSourcesProvider,AdminrLoginProvider,AdminrSBAdminProvider){
     AdminrSBAdminProvider.setAsRootContainer()
+
+    AdminrSBAdminProvider.setBrandTitle('Example Admin')
+
     AdminrLoginProvider.usernameType = AdminrLoginProvider.TEXT
     var datasource = AdminrDataSourcesProvider.createDataSource('Test','https://adminr-test-api.herokuapp.com')
     datasource.addResource('Me','/me')

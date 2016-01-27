@@ -51,12 +51,16 @@ mod.provider('AdminrSBAdmin',['$stateProvider','AdminrContainerManagerProvider',
   class AdminrSBAdminStructure
 
     homePage: new Page()
+    brandTitle: null
 
     setAsRootContainer:()->
       AdminrContainerManagerProvider.setViewForRootContainer('adminr-sb-admin-layout')
     setAsRootContainerWithLogin:()->
       AdminrLoginProvider.setAsRootContainerView()
       AdminrLoginProvider.setLoggedView('adminr-sb-admin-layout')
+
+    setBrandTitle:(title)->
+      @brandTitle = title
 
 
     setHomePage: (name,templateUrl)->
@@ -74,6 +78,7 @@ mod.provider('AdminrSBAdmin',['$stateProvider','AdminrContainerManagerProvider',
 ])
 
 
-mod.controller('SBAdminCtrl',['$scope','$state','$timeout',($scope,$state,$timeout)->
+mod.controller('SBAdminCtrl',['$scope','$state','AdminrSBAdmin',($scope,$state,AdminrSBAdmin)->
   $scope.$state = $state
+  $scope.brandTitle = AdminrSBAdmin.brandTitle
 ])
