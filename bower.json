@@ -27,7 +27,7 @@
   "dependencies": {
     "adminr-login": "~0.1.6",
     "adminr-core": "~0.0.8",
-    "adminr-datasources": "~0.1.1",
+    "adminr-datasources": "~0.1.3",
     "angular-ui-router": "~0.2.15",
     "angular-bootstrap": "~1.1.0",
     "font-awesome": "~4.5.0"

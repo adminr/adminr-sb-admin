@@ -46,13 +46,14 @@ mod.directive('tableResource',()->
 )
 
 mod.directive('bodyResource',()->
+  console.log('xxx')
   return {
     compile:(elm,attributes)->
       row = elm.find('tr')
       if row.length is 0
         row = angular.element('<tr></tr>')
         elm.append(row)
-      row.attr('ng-repeat','row in ' + attributes.bodyResource + if attributes.bodyResourcePath then '.' + attributes.bodyResourcePath else '')
+      row.attr('ng-repeat','row in ' + attributes.bodyResource + '.' + (attributes.bodyResourcePath or 'data'))
   }
 )
 

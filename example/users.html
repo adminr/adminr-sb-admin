@@ -4,8 +4,8 @@
     </div>
     <!-- /.col-lg-12 -->
 </div>
-<div class="row">
-    <div class="col-lg-8" ng-controller="TestCtrl">
+<div class="row" ng-controller="TestCtrl">
+    <div class="col-lg-8">
         <adminr-panel>
             <panel-heading>this is table test</panel-heading>
             <panel-body>
@@ -31,12 +31,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <table adminr-table>
-                            <!--<thead header-resource="appsResource">-->
-                            <!--<tr>-->
-                            <!--<th>id</th>-->
-                            <!--</tr>-->
-                            <!--</thead>-->
-                            <tbody body-resource="users" body-resource-path="data.items" body-generate-header="aa">
+                            <tbody body-resource="users" body-resource-path="data" body-generate-header="aa">
                             <tr>
                                 <td header="#" sort-column="id">#{{row.id}}</td>
                                 <td header="Name" sort-column="username">{{row.username}}</td>
@@ -52,7 +47,9 @@
                 </div>
             </panel-body>
         </adminr-panel>
-        <!--<div ng-repeat="row in appsResource">{{row}}</div>-->
+    </div>
+    <div class="col-md-1">
+        <input type="number" ng-model="users.range.offset" />
         {{users.params}}{{users.range}}
     </div>
 </div>

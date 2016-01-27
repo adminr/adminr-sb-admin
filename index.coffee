@@ -5,6 +5,7 @@ require('./directives/panel.coffee')
 require('./directives/side-menu.coffee')
 require('./directives/table.coffee')
 require('./directives/top-menu.coffee')
+require('./directives/table-panel.coffee')
 
 mod.run(['$state', angular.noop]);
 
