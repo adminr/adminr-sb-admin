@@ -3,35 +3,37 @@ var mod;
 
 mod = angular.module('adminr-sb-admin');
 
-mod.directive('adminrPagination', ["uibPaginationConfig", function(uibPaginationConfig) {
-  uibPaginationConfig.firstText = '<<';
-  uibPaginationConfig.lastText = '>>';
-  uibPaginationConfig.previousText = '<';
-  uibPaginationConfig.nextText = '>';
-  uibPaginationConfig.maxSize = 10;
-  return {
-    template: '<uib-pagination ng-change="dataChanged()" ng-model="data.page" total-items="data.count" items-per-page="data.limit" boundary-links="true" rotate="false"></uib-pagination>',
-    scope: {
-      adminrResource: '='
-    },
-    link: function(scope) {
-      scope.data = {};
-      scope.$watch('adminrResource.range', function(newRange) {
-        if (newRange) {
-          scope.data.count = newRange.count;
-          scope.data.page = Math.floor(newRange.offset / newRange.limit) + 1;
-          return scope.data.limit = newRange.limit;
-        }
-      }, true);
-      return scope.dataChanged = function() {
-        var range;
-        range = scope.adminrResource.range;
-        range.limit = scope.data.limit;
-        return range.offset = (scope.data.page - 1) * range.limit;
-      };
-    }
-  };
-}]);
+mod.directive('adminrPagination', [
+  'uibPaginationConfig', function(uibPaginationConfig) {
+    uibPaginationConfig.firstText = '<<';
+    uibPaginationConfig.lastText = '>>';
+    uibPaginationConfig.previousText = '<';
+    uibPaginationConfig.nextText = '>';
+    uibPaginationConfig.maxSize = 10;
+    return {
+      template: '<uib-pagination ng-change="dataChanged()" ng-model="data.page" total-items="data.count" items-per-page="data.limit" boundary-links="true" rotate="false"></uib-pagination>',
+      scope: {
+        adminrResource: '='
+      },
+      link: function(scope) {
+        scope.data = {};
+        scope.$watch('adminrResource.range', function(newRange) {
+          if (newRange) {
+            scope.data.count = newRange.count;
+            scope.data.page = Math.floor(newRange.offset / newRange.limit) + 1;
+            return scope.data.limit = newRange.limit;
+          }
+        }, true);
+        return scope.dataChanged = function() {
+          var range;
+          range = scope.adminrResource.range;
+          range.limit = scope.data.limit;
+          return range.offset = (scope.data.page - 1) * range.limit;
+        };
+      }
+    };
+  }
+]);
 
 
 },{}],2:[function(require,module,exports){
@@ -72,9 +74,11 @@ var mod;
 
 mod = angular.module('adminr-sb-admin');
 
-mod.controller('SideMenuCtrl', ["$scope", "AdminrSBAdmin", function($scope, AdminrSBAdmin) {
-  return $scope.homePage = AdminrSBAdmin.homePage;
-}]);
+mod.controller('SideMenuCtrl', [
+  '$scope', 'AdminrSBAdmin', function($scope, AdminrSBAdmin) {
+    return $scope.homePage = AdminrSBAdmin.homePage;
+  }
+]);
 
 
 },{}],4:[function(require,module,exports){
@@ -199,8 +203,6 @@ var mod;
 
 mod = angular.module('adminr-sb-admin');
 
-mod.run(["$templateCache", function($templateCache) {}]);
-
 
 },{}],6:[function(require,module,exports){
 var mod;
@@ -219,100 +221,108 @@ require('./directives/top-menu.coffee');
 
 mod.run(['$state', angular.noop]);
 
-mod.run(["$templateCache", function($templateCache) {
-  $templateCache.put('adminr-sb-admin-layout', require('./views/layout.html'));
-  $templateCache.put('adminr-sb-admin-side-menu', require('./views/side-menu.html'));
-  return $templateCache.put('adminr-sb-admin-top-menu', require('./views/top-menu.html'));
-}]);
+mod.run([
+  '$templateCache', function($templateCache) {
+    $templateCache.put('adminr-sb-admin-layout', require('./views/layout.html'));
+    $templateCache.put('adminr-sb-admin-side-menu', require('./views/side-menu.html'));
+    return $templateCache.put('adminr-sb-admin-top-menu', require('./views/top-menu.html'));
+  }
+]);
 
-mod.config(["$stateProvider", "$urlRouterProvider", function($stateProvider, $urlRouterProvider) {
-  return $urlRouterProvider.otherwise('/');
-}]);
+mod.config([
+  '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    return $urlRouterProvider.otherwise('/');
+  }
+]);
 
-mod.provider('AdminrSBAdmin', ["$stateProvider", "AdminrContainerManagerProvider", "AdminrLoginProvider", function($stateProvider, AdminrContainerManagerProvider, AdminrLoginProvider) {
-  var AdminrSBAdminStructure, Page;
-  Page = (function() {
-    Page.prototype.children = [];
+mod.provider('AdminrSBAdmin', [
+  '$stateProvider', 'AdminrContainerManagerProvider', 'AdminrLoginProvider', function($stateProvider, AdminrContainerManagerProvider, AdminrLoginProvider) {
+    var AdminrSBAdminStructure, Page;
+    Page = (function() {
+      Page.prototype.children = [];
 
-    Page.prototype.icon = 'angle-right';
+      Page.prototype.icon = 'angle-right';
 
-    function Page(stateName, name1, url1, templateUrl1) {
-      var options;
-      this.stateName = stateName != null ? stateName : 'index';
-      this.name = name1;
-      this.url = url1;
-      this.templateUrl = templateUrl1;
-      options = {
-        url: this.url
-      };
-      if (this.templateUrl) {
-        options.templateUrl = this.templateUrl;
-      } else {
-        options.template = '<div ui-view></div>';
+      function Page(stateName, name1, url1, templateUrl1) {
+        var options;
+        this.stateName = stateName != null ? stateName : 'index';
+        this.name = name1;
+        this.url = url1;
+        this.templateUrl = templateUrl1;
+        options = {
+          url: this.url
+        };
+        if (this.templateUrl) {
+          options.templateUrl = this.templateUrl;
+        } else {
+          options.template = '<div ui-view></div>';
+        }
+        options.controller = function($scope, $state) {
+          return $scope.$state = $state;
+        };
+        this.state = $stateProvider.state(this.stateName, options);
       }
-      options.controller = function($scope, $state) {
-        return $scope.$state = $state;
+
+      Page.prototype.addPage = function(state, name, url, templateUrl) {
+        var page;
+        page = new Page(this.stateName + '.' + state, name, url, templateUrl);
+        this.children.push(page);
+        return page;
       };
-      this.state = $stateProvider.state(this.stateName, options);
-    }
 
-    Page.prototype.addPage = function(state, name, url, templateUrl) {
-      var page;
-      page = new Page(this.stateName + '.' + state, name, url, templateUrl);
-      this.children.push(page);
-      return page;
-    };
+      Page.prototype.setIcon = function(icon) {
+        this.icon = icon;
+        return this;
+      };
 
-    Page.prototype.setIcon = function(icon) {
-      this.icon = icon;
-      return this;
-    };
+      Page.prototype.getIcon = function() {
+        return this.icon;
+      };
 
-    Page.prototype.getIcon = function() {
-      return this.icon;
-    };
+      return Page;
 
-    return Page;
+    })();
+    AdminrSBAdminStructure = (function() {
+      function AdminrSBAdminStructure() {}
 
-  })();
-  AdminrSBAdminStructure = (function() {
-    function AdminrSBAdminStructure() {}
+      AdminrSBAdminStructure.prototype.homePage = new Page();
 
-    AdminrSBAdminStructure.prototype.homePage = new Page();
+      AdminrSBAdminStructure.prototype.setAsRootContainer = function() {
+        return AdminrContainerManagerProvider.setViewForRootContainer('adminr-sb-admin-layout');
+      };
 
-    AdminrSBAdminStructure.prototype.setAsRootContainer = function() {
-      return AdminrContainerManagerProvider.setViewForRootContainer('adminr-sb-admin-layout');
-    };
+      AdminrSBAdminStructure.prototype.setAsRootContainerWithLogin = function() {
+        AdminrLoginProvider.setAsRootContainerView();
+        return AdminrLoginProvider.setLoggedView('adminr-sb-admin-layout');
+      };
 
-    AdminrSBAdminStructure.prototype.setAsRootContainerWithLogin = function() {
-      AdminrLoginProvider.setAsRootContainerView();
-      return AdminrLoginProvider.setLoggedView('adminr-sb-admin-layout');
-    };
+      AdminrSBAdminStructure.prototype.setHomePage = function(name, templateUrl) {
+        return this.addPage('home', name, '/', templateUrl).setIcon('dashboard');
+      };
 
-    AdminrSBAdminStructure.prototype.setHomePage = function(name, templateUrl) {
-      return this.addPage('home', name, '/', templateUrl).setIcon('dashboard');
-    };
+      AdminrSBAdminStructure.prototype.addPage = function(state, name, url, templateUrl) {
+        if (!this.homePage) {
+          throw new Error('AdminrSBAdmin set home page before adding another pages');
+        }
+        return this.homePage.addPage(state, name, url, templateUrl);
+      };
 
-    AdminrSBAdminStructure.prototype.addPage = function(state, name, url, templateUrl) {
-      if (!this.homePage) {
-        throw new Error('AdminrSBAdmin set home page before adding another pages');
-      }
-      return this.homePage.addPage(state, name, url, templateUrl);
-    };
+      AdminrSBAdminStructure.prototype.$get = function() {
+        return this;
+      };
 
-    AdminrSBAdminStructure.prototype.$get = function() {
-      return this;
-    };
+      return AdminrSBAdminStructure;
 
-    return AdminrSBAdminStructure;
+    })();
+    return new AdminrSBAdminStructure();
+  }
+]);
 
-  })();
-  return new AdminrSBAdminStructure();
-}]);
-
-mod.controller('SBAdminCtrl', ["$scope", "$state", "$timeout", function($scope, $state, $timeout) {
-  return $scope.$state = $state;
-}]);
+mod.controller('SBAdminCtrl', [
+  '$scope', '$state', '$timeout', function($scope, $state, $timeout) {
+    return $scope.$state = $state;
+  }
+]);
 
 
 },{"./directives/pagination.coffee":1,"./directives/panel.coffee":2,"./directives/side-menu.coffee":3,"./directives/table.coffee":4,"./directives/top-menu.coffee":5,"./views/layout.html":7,"./views/side-menu.html":8,"./views/top-menu.html":9}],7:[function(require,module,exports){

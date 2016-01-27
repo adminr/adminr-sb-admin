@@ -1,6 +1,6 @@
 mod = angular.module('adminr-sb-admin')
 
-mod.directive('adminrPagination',(uibPaginationConfig)->
+mod.directive('adminrPagination',['uibPaginationConfig',(uibPaginationConfig)->
   uibPaginationConfig.firstText = '<<'
   uibPaginationConfig.lastText = '>>'
   uibPaginationConfig.previousText = '<'
@@ -28,4 +28,4 @@ mod.directive('adminrPagination',(uibPaginationConfig)->
           range.offset = (scope.data.page - 1) * range.limit
 #          console.log('data',scope.data)
   }
-)
+])

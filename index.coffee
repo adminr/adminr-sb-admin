@@ -8,24 +8,17 @@ require('./directives/top-menu.coffee')
 
 mod.run(['$state', angular.noop]);
 
-mod.run(($templateCache)->
+mod.run(['$templateCache',($templateCache)->
   $templateCache.put('adminr-sb-admin-layout',require('./views/layout.html'))
   $templateCache.put('adminr-sb-admin-side-menu',require('./views/side-menu.html'))
   $templateCache.put('adminr-sb-admin-top-menu',require('./views/top-menu.html'))
-)
+])
 
-mod.config(($stateProvider, $urlRouterProvider)->
+mod.config(['$stateProvider', '$urlRouterProvider',($stateProvider, $urlRouterProvider)->
   $urlRouterProvider.otherwise('/')
-#  $routeProvider.when('/',{
-#    template:'<span>test</span>'
-#  })
-#  $stateProvider.state('test', {url: '/', template: '<div>test {{$state.current}}</div>', controller:($scope,$state)->
-#    $scope.$state = $state
-#  } )
-#  .state('parent.index', {url: '',template:'test'} )
-)
+])
 
-mod.provider('AdminrSBAdmin',($stateProvider,AdminrContainerManagerProvider,AdminrLoginProvider)->
+mod.provider('AdminrSBAdmin',['$stateProvider','AdminrContainerManagerProvider','AdminrLoginProvider',($stateProvider,AdminrContainerManagerProvider,AdminrLoginProvider)->
 
   class Page
     children: []
@@ -78,9 +71,9 @@ mod.provider('AdminrSBAdmin',($stateProvider,AdminrContainerManagerProvider,Admi
       return @
 
   return new AdminrSBAdminStructure()
-)
+])
 
 
-mod.controller('SBAdminCtrl',($scope,$state,$timeout)->
+mod.controller('SBAdminCtrl',['$scope','$state','$timeout',($scope,$state,$timeout)->
   $scope.$state = $state
-)
+])
