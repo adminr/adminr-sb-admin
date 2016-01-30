@@ -3,6 +3,35 @@ var mod;
 
 mod = angular.module('adminr-sb-admin');
 
+mod.directive('adminrForm', function() {
+  return {
+    compile: function(elm, attributes) {
+      var group, groupName, i, len, name, ref, results, wrapper;
+      name = elm.attr('name') || ('form' + Math.round(Math.random() * 10000000));
+      elm.attr('name', name);
+      ref = elm.find('group');
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        group = ref[i];
+        group = angular.element(group);
+        groupName = name + '.' + group.find('input').attr('name');
+        wrapper = angular.element('<div class="form-group" ng-class="{\'has-error\':' + groupName + '.$invalid && !' + groupName + '.$untouched}"></div>');
+        wrapper.append(group.contents());
+        wrapper.append(angular.element('<p class="help-block" ng-if="' + groupName + '.$error.required && !' + groupName + '.$untouched">This field is required</p>'));
+        group.replaceWith(wrapper);
+        results.push(console.log(group.find('input').attr('name')));
+      }
+      return results;
+    }
+  };
+});
+
+
+},{}],2:[function(require,module,exports){
+var mod;
+
+mod = angular.module('adminr-sb-admin');
+
 mod.directive('adminrPagination', [
   'uibPaginationConfig', function(uibPaginationConfig) {
     uibPaginationConfig.firstText = '<<';
@@ -36,7 +65,7 @@ mod.directive('adminrPagination', [
 ]);
 
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var mod;
 
 mod = angular.module('adminr-sb-admin');
@@ -56,12 +85,13 @@ mod.directive('adminrPanel', function() {
         body = newBody;
       }
       heading = elm.find('panel-heading');
-      if (body.length !== 0) {
+      if (heading.length) {
         newHeading = angular.element('<div class="panel-heading"></div>');
         newHeading.append(heading.contents());
+        heading.detach();
         heading = newHeading;
+        panel.append(heading);
       }
-      panel.append(heading);
       panel.append(body);
       return elm.replaceWith(panel);
     }
@@ -69,7 +99,7 @@ mod.directive('adminrPanel', function() {
 });
 
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 var mod;
 
 mod = angular.module('adminr-sb-admin');
@@ -81,7 +111,7 @@ mod.controller('SideMenuCtrl', [
 ]);
 
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var mod;
 
 mod = angular.module('adminr-sb-admin');
@@ -198,13 +228,13 @@ mod.directive('headerResource', function() {
 });
 
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var mod;
 
 mod = angular.module('adminr-sb-admin');
 
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var mod;
 
 mod = angular.module('adminr-sb-admin', ['adminr-login', 'adminr-datasources', 'ui.bootstrap', 'ui.router']);
@@ -218,6 +248,8 @@ require('./directives/side-menu.coffee');
 require('./directives/table.coffee');
 
 require('./directives/top-menu.coffee');
+
+require('./directives/form.coffee');
 
 mod.run(['$state', angular.noop]);
 
@@ -239,8 +271,6 @@ mod.provider('AdminrSBAdmin', [
   '$stateProvider', 'AdminrContainerManagerProvider', 'AdminrLoginProvider', function($stateProvider, AdminrContainerManagerProvider, AdminrLoginProvider) {
     var AdminrSBAdminStructure, Page;
     Page = (function() {
-      Page.prototype.children = [];
-
       Page.prototype.icon = 'angle-right';
 
       function Page(stateName, name1, url1, templateUrl1) {
@@ -249,6 +279,7 @@ mod.provider('AdminrSBAdmin', [
         this.name = name1;
         this.url = url1;
         this.templateUrl = templateUrl1;
+        this.children = [];
         options = {
           url: this.url
         };
@@ -265,7 +296,7 @@ mod.provider('AdminrSBAdmin', [
 
       Page.prototype.addPage = function(state, name, url, templateUrl) {
         var page;
-        page = new Page(this.stateName + '.' + state, name, url, templateUrl);
+        page = new Page(state, name, url, templateUrl);
         this.children.push(page);
         return page;
       };
@@ -325,10 +356,10 @@ mod.controller('SBAdminCtrl', [
 ]);
 
 
-},{"./directives/pagination.coffee":1,"./directives/panel.coffee":2,"./directives/side-menu.coffee":3,"./directives/table.coffee":4,"./directives/top-menu.coffee":5,"./views/layout.html":7,"./views/side-menu.html":8,"./views/top-menu.html":9}],7:[function(require,module,exports){
+},{"./directives/form.coffee":1,"./directives/pagination.coffee":2,"./directives/panel.coffee":3,"./directives/side-menu.coffee":4,"./directives/table.coffee":5,"./directives/top-menu.coffee":6,"./views/layout.html":8,"./views/side-menu.html":9,"./views/top-menu.html":10}],8:[function(require,module,exports){
 module.exports = '<div id="wrapper">\n\n    <!-- Navigation -->\n    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">\n        <div class="navbar-header">\n            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">\n                <span class="sr-only">Toggle navigation</span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n                <span class="icon-bar"></span>\n            </button>\n            <a class="navbar-brand" ui-sref="index.home">SB Admin v2.0</a>\n        </div>\n        <!-- /.navbar-header -->\n\n        <div ng-include="\'adminr-sb-admin-top-menu\'"></div>\n        <!-- /.navbar-top-links -->\n\n        <div class="navbar-default sidebar" role="navigation">\n            <div class="sidebar-nav navbar-collapse" ng-include="\'adminr-sb-admin-side-menu\'">\n            </div>\n            <!-- /.sidebar-collapse -->\n        </div>\n        <!-- /.navbar-static-side -->\n\n    </nav>\n\n    <div id="page-wrapper" ui-view>\n    </div>\n    <!-- /#page-wrapper -->\n\n\n</div>\n<!-- /#wrapper -->\n';
-},{}],8:[function(require,module,exports){
-module.exports = '<ul class="nav" id="side-menu" ng-controller="SideMenuCtrl">\n  <!--<li class="sidebar-search">-->\n    <!--<div class="input-group custom-search-form">-->\n      <!--<input type="text" class="form-control" placeholder="Search...">-->\n                                <!--<span class="input-group-btn">-->\n                                <!--<button class="btn btn-default" type="button">-->\n                                  <!--<i class="fa fa-search"></i>-->\n                                <!--</button>-->\n                            <!--</span>-->\n    <!--</div>-->\n    <!--&lt;!&ndash; /input-group &ndash;&gt;-->\n  <!--</li>-->\n\n  <!--<li>-->\n    <!--<a href="{{homePage.url}}"><i class="fa fa-dashboard fa-fw"></i> {{homePage.name}}</a>-->\n  <!--</li>-->\n  <li ng-repeat="page in homePage.children">\n    <a ui-sref="{{page.stateName}}"><i class="fa fa-{{page.getIcon()}} fa-fw"></i> {{page.name}}</a>\n  </li>\n\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="#">Second Level Item</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="#">Second Level Item</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="#">Third Level <span class="fa arrow"></span></a>-->\n        <!--<ul class="nav nav-third-level">-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n        <!--</ul>-->\n        <!--&lt;!&ndash; /.nav-third-level &ndash;&gt;-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="flot.html">Flot Charts</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="morris.html">Morris.js Charts</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="panels-wells.html">Panels and Wells</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="buttons.html">Buttons</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="notifications.html">Notifications</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="typography.html">Typography</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="icons.html"> Icons</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="grid.html">Grid</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="#">Second Level Item</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="#">Second Level Item</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="#">Third Level <span class="fa arrow"></span></a>-->\n        <!--<ul class="nav nav-third-level">-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n        <!--</ul>-->\n        <!--&lt;!&ndash; /.nav-third-level &ndash;&gt;-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="blank.html">Blank Page</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="login.html">Login Page</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n</ul>\n';
 },{}],9:[function(require,module,exports){
+module.exports = '<ul class="nav" id="side-menu" ng-controller="SideMenuCtrl">\n  <!--<li class="sidebar-search">-->\n    <!--<div class="input-group custom-search-form">-->\n      <!--<input type="text" class="form-control" placeholder="Search...">-->\n                                <!--<span class="input-group-btn">-->\n                                <!--<button class="btn btn-default" type="button">-->\n                                  <!--<i class="fa fa-search"></i>-->\n                                <!--</button>-->\n                            <!--</span>-->\n    <!--</div>-->\n    <!--&lt;!&ndash; /input-group &ndash;&gt;-->\n  <!--</li>-->\n\n  <!--<li>-->\n    <!--<a href="{{homePage.url}}"><i class="fa fa-dashboard fa-fw"></i> {{homePage.name}}</a>-->\n  <!--</li>-->\n  <li ng-repeat="page in homePage.children">\n    <a ui-sref="{{page.stateName}}"><i class="fa fa-{{page.getIcon()}} fa-fw"></i> {{page.name}}</a>\n  </li>\n\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="#">Second Level Item</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="#">Second Level Item</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="#">Third Level <span class="fa arrow"></span></a>-->\n        <!--<ul class="nav nav-third-level">-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n        <!--</ul>-->\n        <!--&lt;!&ndash; /.nav-third-level &ndash;&gt;-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="flot.html">Flot Charts</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="morris.html">Morris.js Charts</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="panels-wells.html">Panels and Wells</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="buttons.html">Buttons</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="notifications.html">Notifications</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="typography.html">Typography</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="icons.html"> Icons</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="grid.html">Grid</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="#">Second Level Item</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="#">Second Level Item</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="#">Third Level <span class="fa arrow"></span></a>-->\n        <!--<ul class="nav nav-third-level">-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n          <!--<li>-->\n            <!--<a href="#">Third Level Item</a>-->\n          <!--</li>-->\n        <!--</ul>-->\n        <!--&lt;!&ndash; /.nav-third-level &ndash;&gt;-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n  <!--<li>-->\n    <!--<a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>-->\n    <!--<ul class="nav nav-second-level">-->\n      <!--<li>-->\n        <!--<a href="blank.html">Blank Page</a>-->\n      <!--</li>-->\n      <!--<li>-->\n        <!--<a href="login.html">Login Page</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->\n  <!--</li>-->\n</ul>\n';
+},{}],10:[function(require,module,exports){
 module.exports = '<ul class="nav navbar-top-links navbar-right">\n  <!--<li class="dropdown">-->\n    <!--<a class="dropdown-toggle" data-toggle="dropdown" href="#">-->\n      <!--<i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>-->\n    <!--</a>-->\n    <!--<ul class="dropdown-menu dropdown-messages">-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<strong>John Smith</strong>-->\n                                    <!--<span class="pull-right text-muted">-->\n                                        <!--<em>Yesterday</em>-->\n                                    <!--</span>-->\n          <!--</div>-->\n          <!--<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<strong>John Smith</strong>-->\n                                    <!--<span class="pull-right text-muted">-->\n                                        <!--<em>Yesterday</em>-->\n                                    <!--</span>-->\n          <!--</div>-->\n          <!--<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<strong>John Smith</strong>-->\n                                    <!--<span class="pull-right text-muted">-->\n                                        <!--<em>Yesterday</em>-->\n                                    <!--</span>-->\n          <!--</div>-->\n          <!--<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a class="text-center" href="#">-->\n          <!--<strong>Read All Messages</strong>-->\n          <!--<i class="fa fa-angle-right"></i>-->\n        <!--</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.dropdown-messages &ndash;&gt;-->\n  <!--</li>-->\n  <!--&lt;!&ndash; /.dropdown &ndash;&gt;-->\n  <!--<li class="dropdown">-->\n    <!--<a class="dropdown-toggle" data-toggle="dropdown" href="#">-->\n      <!--<i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>-->\n    <!--</a>-->\n    <!--<ul class="dropdown-menu dropdown-tasks">-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<p>-->\n              <!--<strong>Task 1</strong>-->\n              <!--<span class="pull-right text-muted">40% Complete</span>-->\n            <!--</p>-->\n            <!--<div class="progress progress-striped active">-->\n              <!--<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">-->\n                <!--<span class="sr-only">40% Complete (success)</span>-->\n              <!--</div>-->\n            <!--</div>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<p>-->\n              <!--<strong>Task 2</strong>-->\n              <!--<span class="pull-right text-muted">20% Complete</span>-->\n            <!--</p>-->\n            <!--<div class="progress progress-striped active">-->\n              <!--<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">-->\n                <!--<span class="sr-only">20% Complete</span>-->\n              <!--</div>-->\n            <!--</div>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<p>-->\n              <!--<strong>Task 3</strong>-->\n              <!--<span class="pull-right text-muted">60% Complete</span>-->\n            <!--</p>-->\n            <!--<div class="progress progress-striped active">-->\n              <!--<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">-->\n                <!--<span class="sr-only">60% Complete (warning)</span>-->\n              <!--</div>-->\n            <!--</div>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<p>-->\n              <!--<strong>Task 4</strong>-->\n              <!--<span class="pull-right text-muted">80% Complete</span>-->\n            <!--</p>-->\n            <!--<div class="progress progress-striped active">-->\n              <!--<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">-->\n                <!--<span class="sr-only">80% Complete (danger)</span>-->\n              <!--</div>-->\n            <!--</div>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a class="text-center" href="#">-->\n          <!--<strong>See All Tasks</strong>-->\n          <!--<i class="fa fa-angle-right"></i>-->\n        <!--</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.dropdown-tasks &ndash;&gt;-->\n  <!--</li>-->\n  <!--&lt;!&ndash; /.dropdown &ndash;&gt;-->\n  <!--<li class="dropdown">-->\n    <!--<a class="dropdown-toggle" data-toggle="dropdown" href="#">-->\n      <!--<i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>-->\n    <!--</a>-->\n    <!--<ul class="dropdown-menu dropdown-alerts">-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<i class="fa fa-comment fa-fw"></i> New Comment-->\n            <!--<span class="pull-right text-muted small">4 minutes ago</span>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<i class="fa fa-twitter fa-fw"></i> 3 New Followers-->\n            <!--<span class="pull-right text-muted small">12 minutes ago</span>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<i class="fa fa-envelope fa-fw"></i> Message Sent-->\n            <!--<span class="pull-right text-muted small">4 minutes ago</span>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<i class="fa fa-tasks fa-fw"></i> New Task-->\n            <!--<span class="pull-right text-muted small">4 minutes ago</span>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a href="#">-->\n          <!--<div>-->\n            <!--<i class="fa fa-upload fa-fw"></i> Server Rebooted-->\n            <!--<span class="pull-right text-muted small">4 minutes ago</span>-->\n          <!--</div>-->\n        <!--</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <!--<li>-->\n        <!--<a class="text-center" href="#">-->\n          <!--<strong>See All Alerts</strong>-->\n          <!--<i class="fa fa-angle-right"></i>-->\n        <!--</a>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--&lt;!&ndash; /.dropdown-alerts &ndash;&gt;-->\n  <!--</li>-->\n  <!-- /.dropdown -->\n  <li uib-dropdown class="dropdown">\n    <a uib-dropdown-toggle class="dropdown-toggle" data-toggle="dropdown" href="#">\n      <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>\n    </a>\n    <ul uib-dropdown-menu class="dropdown-menu dropdown-user">\n      <!--<li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>-->\n      <!--</li>-->\n      <!--<li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>-->\n      <!--</li>-->\n      <!--<li class="divider"></li>-->\n      <li><a ng-click="dataSource.logout()" href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>\n      </li>\n    </ul>\n    <!-- /.dropdown-user -->\n  </li>\n  <!-- /.dropdown -->\n</ul>\n';
-},{}]},{},[6]);
+},{}]},{},[7]);

@@ -15,13 +15,15 @@ mod.directive('adminrPanel',()->
         body = newBody
 
       heading = elm.find('panel-heading')
-      if body.length isnt 0
+      if heading.length
         newHeading = angular.element('<div class="panel-heading"></div>')
         newHeading.append(heading.contents())
+        heading.detach()
         heading = newHeading
+        panel.append(heading)
 
 
-      panel.append(heading)
+
       panel.append(body)
 
       elm.replaceWith(panel)

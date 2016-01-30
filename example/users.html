@@ -31,17 +31,13 @@
                 <div class="row">
                     <div class="col-md-12">
                         <table adminr-table>
-                            <!--<thead header-resource="appsResource">-->
-                            <!--<tr>-->
-                            <!--<th>id</th>-->
-                            <!--</tr>-->
-                            <!--</thead>-->
-                            <tbody body-resource="users" body-resource-path="data.items" body-generate-header="aa">
+                            <tbody body-resource="users" body-resource-path="data" body-generate-header="aa">
                             <tr>
                                 <td header="#" sort-column="id">#{{row.id}}</td>
                                 <td header="Name" sort-column="username">{{row.username}}</td>
                                 <td class="schrink">
-                                    <a class="btn btn-primary">aa</a>
+                                    <a class="btn btn-primary" ui-sref="userDetail({id:row.id})">detail</a>
+                                    <a class="btn btn-danger" ng-click="users.deleteItem(row)">X</a>
                                 </td>
                             </tr>
                             </tbody>

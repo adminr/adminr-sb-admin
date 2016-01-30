@@ -5,6 +5,7 @@ require('./directives/panel.coffee')
 require('./directives/side-menu.coffee')
 require('./directives/table.coffee')
 require('./directives/top-menu.coffee')
+require('./directives/form.coffee')
 
 mod.run(['$state', angular.noop]);
 
@@ -21,9 +22,9 @@ mod.config(['$stateProvider', '$urlRouterProvider',($stateProvider, $urlRouterPr
 mod.provider('AdminrSBAdmin',['$stateProvider','AdminrContainerManagerProvider','AdminrLoginProvider',($stateProvider,AdminrContainerManagerProvider,AdminrLoginProvider)->
 
   class Page
-    children: []
     icon: 'angle-right'
     constructor:(@stateName = 'index',@name,@url,@templateUrl)->
+      @children = []
       options = {
         url:@url
       }
@@ -38,7 +39,7 @@ mod.provider('AdminrSBAdmin',['$stateProvider','AdminrContainerManagerProvider',
       @state = $stateProvider.state(@stateName,options)
 
     addPage:(state,name,url,templateUrl)->
-      page = new Page(@stateName + '.' + state,name,url,templateUrl)
+      page = new Page(state,name,url,templateUrl)
       @children.push(page)
       return page
 
