@@ -9,10 +9,10 @@ mod.config(function(AdminrDataSourcesProvider,AdminrLoginProvider,AdminrSBAdminP
 })
 
 
-mod.config(function(AdminrSBAdminProvider) {
-    AdminrSBAdminProvider.setHomePage('Dashboard', 'dashboard.html')
-    AdminrSBAdminProvider.addPage('users', 'Users', '/users', 'users.html').setIcon('users')
-        .addPage('userDetail','User detail','/users/:id','user-detail.html')
+mod.config(function(AdminrBasicLayoutProvider) {
+    AdminrBasicLayoutProvider.setHomePage('Dashboard', 'dashboard.html')
+    AdminrBasicLayoutProvider.addPage('users', 'Users', {url:'/users', templateUrl:'users.html'}).setIcon('users')
+        .addPage('userDetail','User detail',{url:'/users/:id',templateUrl:'user-detail.html'})
 })
 
 mod.controller('TestCtrl',function($scope,AdminrDataSources){

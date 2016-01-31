@@ -65,13 +65,6 @@ body {
   text-decoration: none;
   background-color: #eee; }
 
-th.sorting, th.sorting_asc, th.sorting_desc {
-  cursor: pointer; }
-
-.schrink {
-  width: 1%;
-  white-space: nowrap; }
-
 /*!
  * Start Bootstrap - SB Admin 2 Bootstrap Admin Theme (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
