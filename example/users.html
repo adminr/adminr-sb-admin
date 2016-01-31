@@ -4,8 +4,8 @@
     </div>
     <!-- /.col-lg-12 -->
 </div>
-<div class="row">
-    <div class="col-lg-8" ng-controller="TestCtrl">
+<div class="row" ng-controller="TestCtrl">
+    <div class="col-lg-8">
         <adminr-panel>
             <panel-heading>this is table test</panel-heading>
             <panel-body>
@@ -48,7 +48,9 @@
                 </div>
             </panel-body>
         </adminr-panel>
-        <!--<div ng-repeat="row in appsResource">{{row}}</div>-->
+    </div>
+    <div class="col-md-1">
+        <input type="number" ng-model="users.range.offset" />
         {{users.params}}{{users.range}}
     </div>
 </div>

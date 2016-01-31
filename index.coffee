@@ -16,14 +16,20 @@ mod.provider('AdminrSBAdmin',['AdminrContainerManagerProvider','AdminrLoginProvi
 
   class AdminrSBAdminStructure
 
+    brandTitle: null
+
     setAsRootContainer:()->
       AdminrContainerManagerProvider.setViewForRootContainer('adminr-sb-admin-layout')
     setAsRootContainerWithLogin:()->
       AdminrLoginProvider.setAsRootContainerView()
       AdminrLoginProvider.setLoggedView('adminr-sb-admin-layout')
-
+    setBrandTitle:(title)->
+      @brandTitle = title
     $get:()->
       return @
 
   return new AdminrSBAdminStructure()
+])
+mod.controller('SBAdminCtrl',['$scope','$state','AdminrSBAdmin',($scope,$state,AdminrSBAdmin)->
+  $scope.brandTitle = AdminrSBAdmin.brandTitle
 ])
