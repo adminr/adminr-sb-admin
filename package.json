@@ -1,6 +1,10 @@
 {
   "name": "adminr-sb-admin",
+<<<<<<< HEAD
   "version": "0.0.8",
+=======
+  "version": "0.0.6",
+>>>>>>> ea6fd94a7c68ec54f5239e9f749a58ba99bcebe6
   "devDependencies": {
     "browser-sync": "^2.11.1",
     "browserify": "^11.0.1",
