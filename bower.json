@@ -28,7 +28,7 @@
     "adminr-login": "~0.1.6",
     "adminr-core": "~0.0.8",
     "adminr-datasources": "^0.1.11",
-    "adminr-bootstrap": "^0.0.11",
+    "adminr-bootstrap": "^0.0.13",
     "adminr-basic-layout": "~0.0.3"
   }
 }
