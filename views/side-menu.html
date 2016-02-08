@@ -1,4 +1,4 @@
-<ul class="nav" id="side-menu" ng-controller="SideMenuCtrl">
+<ul class="nav" id="side-menu">
   <!--<li class="sidebar-search">-->
     <!--<div class="input-group custom-search-form">-->
       <!--<input type="text" class="form-control" placeholder="Search...">-->
@@ -14,7 +14,11 @@
   <!--<li>-->
     <!--<a href="{{homePage.url}}"><i class="fa fa-dashboard fa-fw"></i> {{homePage.name}}</a>-->
   <!--</li>-->
-  <li ng-repeat="page in homePage.children">
+
+  <li ng-class="{active:$homePage === $page}">
+    <a ui-sref="{{$homePage.stateName}}"><i class="fa fa-{{$homePage.getIcon()}} fa-fw"></i> {{$homePage.name}}</a>
+  </li>
+  <li ng-repeat="page in $homePage.children" ng-class="{active:page === $page}">
     <a ui-sref="{{page.stateName}}"><i class="fa fa-{{page.getIcon()}} fa-fw"></i> {{page.name}}</a>
   </li>
 
