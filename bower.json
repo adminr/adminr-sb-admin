@@ -25,9 +25,9 @@
     "example"
   ],
   "dependencies": {
-    "adminr-login": "~0.1.6",
+    "adminr-login": "^0.1.7",
     "adminr-core": "~0.0.8",
-    "adminr-bootstrap": "^0.0.14",
+    "adminr-bootstrap": "^0.0.15",
     "adminr-basic-layout": "^0.1.0"
   }
 }
