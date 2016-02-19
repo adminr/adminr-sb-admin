@@ -27,7 +27,7 @@
   "dependencies": {
     "adminr-login": "~0.1.6",
     "adminr-core": "~0.0.8",
-    "adminr-bootstrap": "^0.0.17",
+    "adminr-bootstrap": "^0.0.18",
     "adminr-basic-layout": "^0.1.0"
   }
 }
